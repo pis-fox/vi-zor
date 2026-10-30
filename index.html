@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VİZON GAMES</title>
+<style>
+:root{
+--bg:#090b13;--panel:#141827;--panel2:#1d2437;
+--line:#293149;--txt:#f4f6ff;--muted:#a4aec4;
+--purple:#805cff;--cyan:#29d5e8
+}
+*{box-sizing:border-box}
+body{
+margin:0;background:var(--bg);color:var(--txt);
+font:15px system-ui,Arial
+}
+button,input{font:inherit}
+button{
+border:0;border-radius:11px;background:var(--purple);
+color:white;padding:10px 15px;font-weight:700;cursor:pointer
+}
+button.alt{background:var(--panel2);border:1px solid var(--line)}
+button:hover{filter:brightness(1.15)}
+header{
+height:68px;display:flex;align-items:center;gap:18px;
+padding:0 4%;border-bottom:1px solid var(--line);
+position:sticky;top:0;background:#090b13ed;
+backdrop-filter:blur(12px);z-index:4
+}
+.logo{font-size:24px;font-weight:1000;letter-spacing:2px}
+.logo span{color:var(--cyan)}
+.search{flex:1;max-width:520px;margin:auto}
+.search input{
+width:100%;border-radius:25px;background:var(--panel);
+border:1px solid var(--line);padding:11px 16px;color:white
+}
+main{max-width:1250px;margin:auto;padding:25px 4%}
+.hero{
+padding:30px;border:1px solid #3c326b;border-radius:22px;
+background:radial-gradient(circle at 85% 20%,#3e267d 0,transparent 35%),
+linear-gradient(120deg,#17172e,#111827);
+display:flex;justify-content:space-between;align-items:center;gap:20px
+}
+.hero h1{font-size:clamp(30px,5vw,48px);margin:0 0 8px}
+.hero p{color:#c1c6dc;margin:0 0 18px}
+.tag{color:var(--cyan);font-weight:800;letter-spacing:2px;font-size:12px}
+h2{margin:28px 0 14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}
+.tabs button.active{background:white;color:#111}
+.grid{
+display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+gap:16px
+}
+.game{
+border:1px solid var(--line);border-radius:16px;
+background:var(--panel);overflow:hidden
+}
+.cover{
+height:130px;display:grid;place-items:center;font-size:48px;
+background:linear-gradient(135deg,#202d54,#34215b)
+}
+.gamebody{padding:13px}
+.gamebody h3{margin:0 0 4px}
+.muted{color:var(--muted);font-size:13px}
+.gamebody button{margin-top:12px;width:100%}
+.panel{
+padding:18px;background:var(--panel);
+border:1px solid var(--line);border-radius:16px;margin:18px 0
+}
+.hidden{display:none!important}
+.field{display:grid;gap:6px;margin:12px 0}
+.field input{
+background:#0b1020;color:white;border:1px solid var(--line);
+padding:11px;border-radius:10px
+}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1}
+#gameArea{
+background:#05070d;border:1px solid var(--line);
+border-radius:16px;padding:15px;text-align:center
+}
+canvas{
+max-width:100%;background:#10192b;border-radius:10px;
+touch-action:manipulation
+}
+#streamPreview{
+width:100%;max-height:340px;background:#05070d;border-radius:12px
+}
+footer{
+text-align:center;color:var(--muted);padding:35px;
+border-top:1px solid var(--line);margin-top:40px
+}
+@media(max-width:600px){
+header{padding:0 3%;gap:9px}
+.logo{font-size:20px}
+.search input{padding:9px}
+.hero{padding:22px}
+.grid{grid-template-columns:1fr 1fr;gap:10px}
+.cover{height:100px}
+.gamebody{padding:10px}
+.gamebody h3{font-size:14px}
+}
+@media(max-width:370px){
+.grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">VİZON<span> GAMES</span></div>
+<div class="search">
+<input id="search" placeholder="Oyun ara...">
+</div>
+<button class="alt" id="profileBtn">Profil</button>
+</header>
+
+<main>
+
+<section class="hero">
+<div>
+<div class="tag">OYNA · KEŞFET · YAYINLA</div>
+<h1>Oyun dünyana hoş geldin.</h1>
+<p>Oyunları keşfet, kendi oyun alanını oluştur ve yayıncı ol.</p>
+<button id="exploreBtn">Oyunları keşfet</button>
+<button class="alt" id="openStream">🔴 Yayın aç</button>
+</div>
+<div style="font-size:clamp(55px,10vw,100px)">🎮</div>
+</section>
+
+<div class="tabs">
+<button class="active" data-cat="all">Tümü</button>
+<button class="alt" data-cat="arcade">Atari</button>
+<button class="alt" data-cat="puzzle">Bulmaca</button>
+<button class="alt" data-cat="action">Aksiyon</button>
+</div>
+
+<h2>Popüler oyunlar</h2>
+
+<div class="grid" id="games">
+
+<article class="game" data-category="arcade" data-name="Yılan Oyunu">
+<div class="cover">🐍</div>
+<div class="gamebody">
+<h3>Yılan Oyunu</h3>
+<div class="muted">Atari · Tek oyunculu</div>
+<button data-game="snake">Şimdi oyna</button>
+</div>
+</article>
+
+<article class="game" data-category="puzzle" data-name="Hafıza Kartları">
+<div class="cover">🧠</div>
+<div class="gamebody">
+<h3>Hafıza Kartları</h3>
+<div class="muted">Bulmaca · Yakında</div>
+<button class="alt" disabled>Yakında</button>
+</div>
+</article>
+
+<article class="game" data-category="action" data-name="Uzay Savunması">
+<div class="cover">🚀</div>
+<div class="gamebody">
+<h3>Uzay Savunması</h3>
+<div class="muted">Aksiyon · Yakında</div>
+<button class="alt" disabled>Yakında</button>
+</div>
+</article>
+
+</div>
+
+<section id="gamePanel" class="panel hidden">
+<div class="row" style="align-items:center">
+<h2 style="margin:0">🐍 Yılan Oyunu</h2>
+<button class="alt" id="closeGame" style="flex:0">Kapat</button>
+</div>
+<p class="muted">Ok tuşlarıyla veya ekrandaki yönlerle yılanı hareket ettir.</p>
+
+<div id="gameArea">
+<canvas id="board" width="400" height="400"></canvas>
+<p>Skor: <b id="score">0</b></p>
+
+<div class="row">
+<button class="alt" data-dir="up">↑</button>
+</div>
+<div class="row">
+<button class="alt" data-dir="left">←</button>
+<button class="alt" data-dir="down">↓</button>
+<button class="alt" data-dir="right">→</button>
+</div>
+<p><button id="restart">Yeniden başlat</button></p>
+</div>
+</section>
+
+<section id="streamPanel" class="panel hidden">
+<div class="row" style="align-items:center">
+<div>
+<h2 style="margin:0">🔴 Yayın stüdyosu</h2>
+<p class="muted">Kamera önizlemesi ve yayın hazırlığı.</p>
+</div>
+<button class="alt" id="closeStream" style="flex:0">Kapat</button>
+</div>
+
+<div class="field">
+<label>Yayın başlığı</label>
+<input id="streamTitle" placeholder="Yayınının adı">
+</div>
+
+<video id="streamPreview" autoplay muted playsinline></video>
+
+<div class="actions">
+<button id="cameraBtn">Kamerayı aç</button>
+<button id="stopCamera" class="alt">Kamerayı kapat</button>
+<button id="goLive" disabled>Yayını başlat</button>
+</div>
+
+<p class="muted" id="streamStatus">
+Kamera izni isteğe bağlıdır. Bu demo henüz herkese açık canlı yayın yapmaz.
+</p>
+</section>
+
+<section id="profilePanel" class="panel hidden">
+<h2>Oyuncu profili</h2>
+<div class="field">
+<label>Oyuncu adın</label>
+<input id="playerName" placeholder="Oyuncu adını yaz">
+</div>
+<button id="saveProfile">Kaydet</button>
+<p class="muted" id="profileStatus">Profil bilgisi bu cihazda saklanır.</p>
+</section>
+
+<section class="panel">
+<h2>🎮 Kendi oyununu yayınla</h2>
+<p class="muted">
+Bu alan, ileride kullanıcıların yaptıkları HTML5 oyunlarını
+platforma eklemesi için hazırlanmıştır. Şimdilik yalnızca arayüz demosudur.
+</p>
+<div class="field">
+<label>Oyun adı</label>
+<input id="newGameName" placeholder="Oyununun adı">
+</div>
+<div class="field">
+<label>Oyun dosyası (HTML)</label>
+<input type="file" id="gameFile" accept=".html,text/html">
+</div>
+<button id="submitGame">Oyun gönder</button>
+<p class="muted" id="gameSubmitStatus"></p>
+</section>
+
+</main>
+
+<footer>
+VİZON GAMES © 2026 · Oyununu keşfet, eğlenceye katıl.
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let stream=null;
+
+$("exploreBtn").onclick=()=>$("games").scrollIntoView({behavior:"smooth"});
+
+$("openStream").onclick=()=>$("streamPanel").classList.remove("hidden");
+$("closeStream").onclick=()=>$("streamPanel").classList.add("hidden");
+
+$("profileBtn").onclick=()=>$("profilePanel").classList.toggle("hidden");
+
+$("saveProfile").onclick=()=>{
+localStorage.setItem("vizonPlayerName",$("playerName").value);
+$("profileStatus").textContent="Oyuncu adı bu cihazda kaydedildi.";
+};
+
+$("playerName").value=localStorage.getItem("vizonPlayerName")||"";
+
+$("search").oninput=()=>{
+let q=$("search").value.toLocaleLowerCase("tr");
+document.querySelectorAll(".game").forEach(g=>{
+g.style.display=g.dataset.name.toLocaleLowerCase("tr").includes(q)?"":"none";
+});
+};
+
+document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{
+document.querySelectorAll("[data-cat]").forEach(x=>{
+x.classList.toggle("active",x===b);
+x.classList.toggle("alt",x!==b);
+});
+document.querySelectorAll(".game").forEach(g=>{
+g.style.display=(b.dataset.cat==="all"||g.dataset.category===b.dataset.cat)?"":"none";
+});
+});
+
+$("submitGame").onclick=()=>{
+$("gameSubmitStatus").textContent=
+"Oyun gönderme özelliği sunucu bağlantısı tamamlandığında etkinleşecek. Bu demo dosyayı herkese yüklemez.";
+};
+
+$("gameFile").onchange=()=>{
+if($("gameFile").files[0]){
+$("gameSubmitStatus").textContent="Dosya seçildi. Bu demo dosyayı sunucuya yüklemez.";
+}
+};
+
+$("cameraBtn").onclick=async()=>{
+try{
+stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+$("streamPreview").srcObject=stream;
+$("goLive").disabled=false;
+$("streamStatus").textContent=
+"Kamera hazır. Bu yalnızca cihazındaki önizlemedir; henüz diğer kullanıcılara yayın yapmaz.";
+}catch(e){
+$("streamStatus").textContent=
+"Kamera açılamadı. Tarayıcı iznini ve güvenli bağlantıyı kontrol et.";
+}
+};
+
+function stopStream(){
+if(stream){
+stream.getTracks().forEach(t=>t.stop());
+stream=null;
+}
+$("streamPreview").srcObject=null;
+$("goLive").disabled=true;
+}
+$("stopCamera").onclick=stopStream;
+
+$("goLive").onclick=()=>{
+alert("Yayın arayüzü hazır. Herkesin izleyebilmesi için canlı yayın sunucusu ve WebRTC bağlantısı eklenmeli.");
+};
+
+$("closeGame").onclick=()=>$("gamePanel").classList.add("hidden");
+
+document.querySelectorAll("[data-game]").forEach(b=>b.onclick=()=>{
+$("gamePanel").classList.remove("hidden");
+startSnake();
+});
+
+const canvas=$("board");
+const ctx=canvas.getContext("2d");
+let snake,food,dir,nextDir,score,timer;
+
+function startSnake(){
+clearInterval(timer);
+snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+dir={x:1,y:0};
+nextDir=dir;
+score=0;
+food={x:15,y:10};
+$("score").textContent=0;
+draw();
+timer=setInterval(tick,125);
+}
+
+function draw(){
+ctx.fillStyle="#10192b";
+ctx.fillRect(0,0,400,400);
+ctx.fillStyle="#ffcf5a";
+ctx.fillRect(food.x*20,food.y*20,18,18);
+snake.forEach((p,i)=>{
+ctx.fillStyle=i?"#29d5e8":"#a78bfa";
+ctx.fillRect(p.x*20,p.y*20,18,18);
+});
+}
+
+function tick(){
+dir=nextDir;
+let h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+
+if(h.x<0||h.x>=20||h.y<0||h.y>=20||
+snake.some(p=>p.x===h.x&&p.y===h.y)){
+clearInterval(timer);
+return;
+}
+
+snake.unshift(h);
+
+if(h.x===food.x&&h.y===food.y){
+score++;
+$("score").textContent=score;
+food={
+x:Math.floor(Math.random()*20),
+y:Math.floor(Math.random()*20)
+};
+}else{
+snake.pop();
+}
+draw();
+}
+
+function setDir(d){
+const dirs={
+up:{x:0,y:-1},
+down:{x:0,y:1},
+left:{x:-1,y:0},
+right:{x:1,y:0}
+};
+let n=dirs[d];
+if(n&&!(n.x===-dir.x&&n.y===-dir.y))nextDir=n;
+}
+
+document.addEventListener("keydown",e=>{
+let m={
+ArrowUp:"up",
+ArrowDown:"down",
+ArrowLeft:"left",
+ArrowRight:"right"
+};
+if(m[e.key]){
+e.preventDefault();
+setDir(m[e.key]);
+}
+});
+
+document.querySelectorAll("[data-dir]").forEach(b=>{
+b.onclick=()=>setDir(b.dataset.dir);
+});
+
+$("restart").onclick=startSnake;
+</script>
+
+</body>
+</html>
